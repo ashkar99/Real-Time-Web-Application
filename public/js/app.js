@@ -18,12 +18,16 @@ ws.onmessage = (event) => {
 function insertIssue(issue) {
     // Clone the template
     const node = issueTemplate.content.cloneNode(true);
-    const li = node.querySelector('li');
     
-    // Populate the template with the new data
-    li.id = `issue-${issue.id}`;
-    li.innerHTML = `<strong>#${issue.iid}:</strong> ${issue.title} <em>(${issue.state})</em> <span class="badge">NEW</span>`;
+    // Select the root element and set its ID
+    const wrapper = node.querySelector('.issue-node');
+    wrapper.id = `issue-${issue.id}`;
     
-    // Inject at the top of the list
+    // Populate the data fields
+    node.querySelector('.issue-title').textContent = `#${issue.iid}: ${issue.title}`;
+    node.querySelector('.issue-state').textContent = issue.state;
+    node.querySelector('.issue-date').textContent = `Created: ${new Date(issue.created_at).toLocaleDateString()}`;
+    
+    // Inject at the top of the grid
     issueList.insertBefore(node, issueList.firstChild);
 }
