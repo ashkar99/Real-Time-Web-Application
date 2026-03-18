@@ -30,6 +30,7 @@
                             <p class="card-text text-muted small mt-2">
                                 Created: <%= new Date(issue.created_at).toLocaleDateString() %>
                             </p>
+                            <button class="btn btn-sm btn-outline-danger mt-2 close-issue-btn" data-iid="<%= issue.iid %>"> Close Issue </button>
                         </div>
                     </div>
                 </div>
@@ -45,6 +46,7 @@
                     <span class="badge bg-success issue-state"></span>
                     <span class="badge bg-primary ms-1">NEW (Real-time)</span>
                     <p class="card-text text-muted small mt-2 issue-date"></p>
+                    <button class="btn btn-sm btn-outline-danger mt-2 close-issue-btn"> Close Issue </button>
                 </div>
             </div>
         </div>
