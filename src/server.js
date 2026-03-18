@@ -1,5 +1,6 @@
 import express from 'express';
 import 'dotenv/config';
+import { homeRouter } from './routes/homeRouter.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +17,9 @@ app.set('views', './src/views');
 app.get('/', (req, res) => {
     res.send('Server architecture initialized.');
 });
+
+// Use the home router for all routes starting with /
+app.use('/', homeRouter);
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
