@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitLab Issues</title>
+</head>
+<body>
+    <h1>Repository Issues</h1>
+    
+    <ul id="issue-list">
+        <% issues.forEach(issue => { %>
+            <li id="issue-<%= issue.id %>">
+                <strong>#<%= issue.iid %>:</strong> <%= issue.title %> 
+                <em>(<%= issue.state %>)</em>
+            </li>
+        <% }) %>
+    </ul>
+</body>
+</html>
