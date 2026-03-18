@@ -13,11 +13,6 @@ app.use(express.urlencoded({ extended: false }));
 app.set('view engine', 'ejs');
 app.set('views', './src/views');
 
-// Basic Health Route to verify setup
-app.get('/', (req, res) => {
-    res.send('Server architecture initialized.');
-});
-
 // Use the home router for all routes starting with /
 app.use('/', homeRouter);
 
