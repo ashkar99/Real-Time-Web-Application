@@ -8,12 +8,44 @@ const ws = new WebSocket(protocol + window.location.host);
 ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
     
-    // Filter for issue events
     if (data.type === 'issue_event') {
         const issue = data.payload.object_attributes;
         insertIssue(issue);
+    } else if (data.type === 'push_event') {
+        showCommitNotification(data.payload);
     }
 };
+
+function showCommitNotification(payload) {
+    const container = document.getElementById('notification-zone');
+    
+    // Construct the Toast element
+    const toastEl = document.createElement('div');
+    toastEl.className = 'toast align-items-center text-bg-primary border-0 mb-2';
+    toastEl.setAttribute('role', 'alert');
+    toastEl.setAttribute('aria-live', 'assertive');
+    toastEl.setAttribute('aria-atomic', 'true');
+    
+    toastEl.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                <strong>Code Push:</strong> ${payload.user} just pushed ${payload.commits} commit(s) to branch '${payload.branch}'.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+    
+    container.appendChild(toastEl);
+    
+    // Initialize and show the Bootstrap Toast
+    const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
+    toast.show();
+    
+    // Clean up DOM after it hides
+    toastEl.addEventListener('hidden.bs.toast', () => {
+        toastEl.remove();
+    });
+}
 
 function insertIssue(issue) {
     // Clone the template
