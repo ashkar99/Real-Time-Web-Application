@@ -17,13 +17,20 @@ export const webhookController = {
         
         // Issue Events
         if (payload.object_kind === 'issue') {
-            data = JSON.stringify({
-                type: 'issue_event',
-                payload: payload
-            });
+            const action = payload.object_attributes.action;
+            
+            if (action === 'open') {
+                data = JSON.stringify({
+                    type: 'issue_event',
+                    payload: payload
+                });
+            } else {
+                console.log(`Filtered out issue event with action: ${action}`);
+            }
         } 
         // Push (Commit) Events
         else if (payload.object_kind === 'push') {
+            console.log(`Received push event from ${payload.user_name}`);
             data = JSON.stringify({
                 type: 'push_event',
                 payload: {
