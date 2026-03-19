@@ -9,28 +9,38 @@ export const webhookController = {
         next();
     },
 
-    // Webhook Payload Handler
     handleWebhook(req, res) {
-        // Acknowledge receipt immediately to prevent GitLab from disabling the hook
         res.status(200).send('Webhook acknowledged.');
 
         const payload = req.body;
+        let data = null;
         
-        // Only process issue events
-        if (payload.object_kind !== 'issue') return;
+        // Issue Events
+        if (payload.object_kind === 'issue') {
+            data = JSON.stringify({
+                type: 'issue_event',
+                payload: payload
+            });
+        } 
+        // Push (Commit) Events
+        else if (payload.object_kind === 'push') {
+            data = JSON.stringify({
+                type: 'push_event',
+                payload: {
+                    user: payload.user_name,
+                    commits: payload.total_commits_count,
+                    branch: payload.ref.replace('refs/heads/', '')
+                }
+            });
+        }
 
-        console.log(`Received issue event: ${payload.object_attributes.title}`);
-
-        // Broadcast the payload to all connected WebSocket clients
-        const data = JSON.stringify({
-            type: 'issue_event',
-            payload: payload
-        });
-
-        res.wss.clients.forEach((client) => {
-            if (client.readyState === 1) { // WebSocket.OPEN
-                client.send(data);
-            }
-        });
+        // Broadcast if data was constructed
+        if (data) {
+            res.wss.clients.forEach((client) => {
+                if (client.readyState === 1) { // WebSocket.OPEN
+                    client.send(data);
+                }
+            });
+        }
     }
 };
