@@ -30,13 +30,18 @@ export const webhookController = {
         } 
         // Push (Commit) Events
         else if (payload.object_kind === 'push') {
-            console.log(`Received push event from ${payload.user_name}`);
+            const userName = payload.user_name || 'A user';
+            const commitCount = payload.total_commits_count || 0;
+            const branch = payload.ref ? payload.ref.replace('refs/heads/', '') : 'unknown';
+            
+            console.log(`Received push event from ${userName} on branch ${branch}`);
+            
             data = JSON.stringify({
                 type: 'push_event',
                 payload: {
-                    user: payload.user_name,
-                    commits: payload.total_commits_count,
-                    branch: payload.ref.replace('refs/heads/', '')
+                    user: userName,
+                    commits: commitCount,
+                    branch: branch
                 }
             });
         }
