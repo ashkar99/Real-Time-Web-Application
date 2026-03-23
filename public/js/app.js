@@ -96,3 +96,49 @@ issueList.addEventListener('click', async (event) => {
         }
     }
 });
+
+// Issue Creation Pipeline
+const createForm = document.getElementById('create-issue-form');
+
+if (createForm) {
+    createForm.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent standard page reload
+
+        const submitBtn = document.getElementById('submit-issue-btn');
+        const titleInput = document.getElementById('issue-title').value;
+        const descInput = document.getElementById('issue-desc').value;
+
+        // State lock to prevent duplicate submissions
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Deploying...';
+
+        try {
+            const response = await fetch('/issues', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    title: titleInput, 
+                    description: descInput 
+                })
+            });
+
+            if (response.ok) {
+                // Purge form data and collapse the modal
+                createForm.reset();
+                const modalElement = document.getElementById('createIssueModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                modalInstance.hide();
+            } else {
+                console.error('Server rejected the creation payload.');
+            }
+        } catch (error) {
+            console.error('Network integrity failure during creation:', error);
+        } finally {
+            // Release state lock
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Deploy Issue';
+        }
+    });
+}
