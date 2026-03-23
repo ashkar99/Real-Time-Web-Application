@@ -59,40 +59,56 @@ function insertIssue(issue) {
     node.querySelector('.issue-title').textContent = `#${issue.iid}: ${issue.title}`;
     node.querySelector('.issue-state').textContent = issue.state;
     node.querySelector('.issue-date').textContent = `Created: ${new Date(issue.created_at).toLocaleDateString()}`;
-    node.querySelector('.close-issue-btn').dataset.iid = issue.iid;
+    node.querySelector('.action-issue-btn').dataset.iid = issue.iid;
 
     // Inject at the top of the grid
     issueList.insertBefore(node, issueList.firstChild);
 }
 
 issueList.addEventListener('click', async (event) => {
-    // Intercept only clicks on the close button
-    if (event.target.classList.contains('close-issue-btn')) {
+    if (event.target.classList.contains('action-issue-btn')) {
         const button = event.target;
         const iid = button.dataset.iid;
+        const action = button.dataset.action; // Reads 'close' or 'reopen'
         
-        // Disable button to prevent duplicate clicks
+        // Lock UI State
         button.disabled = true;
-        button.textContent = 'Closing...';
+        button.textContent = action === 'close' ? 'Closing...' : 'Reopening...';
 
         try {
-            // Dispatch the request to Node.js proxy route
-            const response = await fetch(`/issues/${iid}/close`, {
+            // Dispatch dynamic POST request
+            const response = await fetch(`/issues/${iid}/${action}`, {
                 method: 'POST'
             });
 
             if (response.ok) {
-                const cardNode = button.closest('.issue-node');
-                cardNode.remove();
+                // UI Toggle Logic
+                const cardNode = button.closest('.card-body');
+                const badge = cardNode.querySelector('.issue-state-badge');
+                
+                if (action === 'close') {
+                    badge.textContent = 'closed';
+                    badge.classList.replace('bg-success', 'bg-secondary');
+                    button.dataset.action = 'reopen';
+                    button.textContent = 'Reopen Issue';
+                    button.classList.replace('btn-outline-danger', 'btn-outline-success');
+                } else {
+                    badge.textContent = 'opened';
+                    badge.classList.replace('bg-secondary', 'bg-success');
+                    button.dataset.action = 'close';
+                    button.textContent = 'Close Issue';
+                    button.classList.replace('btn-outline-success', 'btn-outline-danger');
+                }
             } else {
-                console.error('Server rejected the close request.');
-                button.disabled = false;
-                button.textContent = 'Close Issue';
+                console.error(`Server rejected the ${action} request.`);
+                button.textContent = action === 'close' ? 'Close Issue' : 'Reopen Issue';
             }
         } catch (error) {
-            console.error('Network error during close operation:', error);
+            console.error(`Network error during ${action} operation:`, error);
+            button.textContent = action === 'close' ? 'Close Issue' : 'Reopen Issue';
+        } finally {
+            // Release UI Lock
             button.disabled = false;
-            button.textContent = 'Close Issue';
         }
     }
 });
