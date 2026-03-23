@@ -10,7 +10,8 @@ ws.onmessage = (event) => {
     
     if (data.type === 'issue_event') {
         const issue = data.payload.object_attributes;
-        insertIssue(issue);
+        const authorName = data.payload.user.name;
+        insertIssue(issue, authorName);
     } else if (data.type === 'push_event') {
         showCommitNotification(data.payload);
     }
@@ -47,15 +48,14 @@ function showCommitNotification(payload) {
     });
 }
 
-function insertIssue(issue) {
+function insertIssue(issue, authorName) {
     const node = issueTemplate.content.cloneNode(true);
     
     const wrapper = node.querySelector('.issue-node');
     wrapper.id = `issue-${issue.id}`;
     
-    // Populate the data fields
     node.querySelector('.issue-title').textContent = `#${issue.iid}: ${issue.title}`;
-    node.querySelector('.issue-date').textContent = `Created: ${new Date(issue.created_at).toLocaleDateString()}`;
+    node.querySelector('.issue-date-author').innerHTML = `Created by <strong>${authorName}</strong> on ${new Date(issue.created_at).toLocaleDateString()}`;
     const actionBtn = node.querySelector('.action-issue-btn');
     actionBtn.dataset.iid = issue.iid;
     actionBtn.dataset.action = 'close'; 
