@@ -51,5 +51,42 @@ export const issueController = {
             console.error('Failed to close issue:', error);
             res.status(500).json({ error: 'Internal Server Error while communicating with GitLab.' });
         }
+    },
+
+  async createIssue(req, res) {
+        try {
+            const { title, description } = req.body;
+            
+            if (!title) {
+                return res.status(400).json({ error: 'Issue title is strictly required.' });
+            }
+
+            const projectId = process.env.GITLAB_PROJECT_ID;
+            const url = `https://gitlab.lnu.se/api/v4/projects/${projectId}/issues`;
+
+            // Execute the POST request to GitLab
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${process.env.GITLAB_PERSONAL_ACCESS_TOKEN}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: title,
+                    description: description
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`GitLab API error: ${response.status} ${response.statusText}`);
+            }
+
+            const newIssue = await response.json();
+            res.status(201).json(newIssue);
+
+        } catch (error) {
+            console.error('Failed to create issue:', error);
+            res.status(500).json({ error: 'Internal Server Error while communicating with GitLab.' });
+        }
     }
 };
