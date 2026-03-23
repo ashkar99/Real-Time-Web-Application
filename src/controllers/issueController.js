@@ -2,7 +2,7 @@ export const issueController = {
     async index(req, res) {
         try {
             const projectId = process.env.GITLAB_PROJECT_ID;
-            const url = `https://gitlab.lnu.se/api/v4/projects/${projectId}/issues?state=opened`;
+            const url = `https://gitlab.lnu.se/api/v4/projects/${projectId}/issues?state=all`;
 
             const response = await fetch(url, {
                 method: 'GET',
@@ -88,5 +88,32 @@ export const issueController = {
             console.error('Failed to create issue:', error);
             res.status(500).json({ error: 'Internal Server Error while communicating with GitLab.' });
         }
-    }
+    },
+
+  async reopenIssue(req, res) {
+      try {
+          const { iid } = req.params; 
+          const projectId = process.env.GITLAB_PROJECT_ID;
+          
+          // The GitLab endpoint to reopen an issue
+          const url = `https://gitlab.lnu.se/api/v4/projects/${projectId}/issues/${iid}?state_event=reopen`;
+
+          const response = await fetch(url, {
+              method: 'PUT',
+              headers: {
+                  'Authorization': `Bearer ${process.env.GITLAB_PERSONAL_ACCESS_TOKEN}`
+              }
+          });
+
+          if (!response.ok) {
+              throw new Error(`GitLab API error: ${response.status} ${response.statusText}`);
+          }
+
+          res.status(200).json({ message: `Issue #${iid} successfully reopened.` });
+
+      } catch (error) {
+          console.error('Failed to reopen issue:', error);
+          res.status(500).json({ error: 'Internal Server Error while communicating with GitLab.' });
+      }
+  },
 };
