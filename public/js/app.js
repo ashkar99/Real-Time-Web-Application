@@ -59,7 +59,7 @@ function insertIssue(issue) {
     node.querySelector('.issue-title').textContent = `#${issue.iid}: ${issue.title}`;
     node.querySelector('.issue-state').textContent = issue.state;
     node.querySelector('.issue-date').textContent = `Created: ${new Date(issue.created_at).toLocaleDateString()}`;
-    node.querySelector('.close-issue-btn').dataset.iid = issue.iid;node.querySelector('.close-issue-btn').dataset.iid = issue.iid;
+    node.querySelector('.close-issue-btn').dataset.iid = issue.iid;
 
     // Inject at the top of the grid
     issueList.insertBefore(node, issueList.firstChild);
