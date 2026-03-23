@@ -60,41 +60,46 @@ function insertIssue(issue) {
     actionBtn.dataset.iid = issue.iid;
     actionBtn.dataset.action = 'close'; 
 
-    issueList.insertBefore(node, issueList.firstChild);
+    const openList = document.getElementById('open-issue-list');
+    openList.insertBefore(node, openList.firstChild);
 }
 
-issueList.addEventListener('click', async (event) => {
+document.body.addEventListener('click', async (event) => {
     if (event.target.classList.contains('action-issue-btn')) {
         const button = event.target;
         const iid = button.dataset.iid;
         const action = button.dataset.action; 
-        
+
         button.disabled = true;
         button.textContent = action === 'close' ? 'Closing...' : 'Reopening...';
 
         try {
-            // Dispatch dynamic POST request
             const response = await fetch(`/issues/${iid}/${action}`, {
                 method: 'POST'
             });
 
             if (response.ok) {
-                // UI Toggle Logic
-                const cardNode = button.closest('.card-body');
+                const cardNode = button.closest('.issue-node');
                 const badge = cardNode.querySelector('.issue-state-badge');
-                
+
                 if (action === 'close') {
                     badge.textContent = 'closed';
                     badge.classList.replace('bg-success', 'bg-secondary');
                     button.dataset.action = 'reopen';
                     button.textContent = 'Reopen Issue';
                     button.classList.replace('btn-outline-danger', 'btn-outline-success');
+
+                    // Move to closed list
+                    document.getElementById('closed-issue-list').prepend(cardNode);
                 } else {
                     badge.textContent = 'opened';
                     badge.classList.replace('bg-secondary', 'bg-success');
                     button.dataset.action = 'close';
                     button.textContent = 'Close Issue';
                     button.classList.replace('btn-outline-success', 'btn-outline-danger');
+
+                    // Move to open list
+                    document.getElementById('open-issue-list').prepend(cardNode);
                 }
             } else {
                 console.error(`Server rejected the ${action} request.`);
