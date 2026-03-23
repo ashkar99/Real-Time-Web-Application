@@ -28,15 +28,24 @@
                 <div class="col-md-6 col-lg-4 mb-3 issue-node" id="issue-<%= issue.id %>">
                     <div class="card issue-card h-100">
                         <div class="card-body">
-                            <h5 class="card-title text-truncate" title="<%= issue.title %>">
-                                #<%= issue.iid %>: <%= issue.title %>
-                            </h5>
-                            <span class="badge bg-success"><%= issue.state %></span>
-                            <p class="card-text text-muted small mt-2">
-                                Created: <%= new Date(issue.created_at).toLocaleDateString() %>
-                            </p>
-                            <button class="btn btn-sm btn-outline-danger mt-2 close-issue-btn" data-iid="<%= issue.iid %>"> Close Issue </button>
-                        </div>
+                          <h5 class="card-title text-truncate" title="<%= issue.title %>">
+                              #<%= issue.iid %>: <%= issue.title %>
+                          </h5>
+                          
+                          <span class="badge <%= issue.state === 'opened' ? 'bg-success' : 'bg-secondary' %> issue-state-badge">
+                              <%= issue.state %>
+                          </span>
+                          
+                          <p class="card-text text-muted small mt-2">
+                              Created: <%= new Date(issue.created_at).toLocaleDateString() %>
+                          </p>
+
+                          <% if (issue.state === 'opened') { %>
+                              <button class="btn btn-sm btn-outline-danger mt-2 action-issue-btn" data-iid="<%= issue.iid %>" data-action="close">Close Issue</button>
+                          <% } else { %>
+                              <button class="btn btn-sm btn-outline-success mt-2 action-issue-btn" data-iid="<%= issue.iid %>" data-action="reopen">Reopen Issue</button>
+                          <% } %>
+                      </div>
                     </div>
                 </div>
             <% }) %>
@@ -48,10 +57,10 @@
             <div class="card issue-card h-100 border-primary">
                 <div class="card-body">
                     <h5 class="card-title text-truncate issue-title"></h5>
-                    <span class="badge bg-success issue-state"></span>
+                    <span class="badge bg-success issue-state-badge">opened</span>
                     <span class="badge bg-primary ms-1">NEW (Real-time)</span>
                     <p class="card-text text-muted small mt-2 issue-date"></p>
-                    <button class="btn btn-sm btn-outline-danger mt-2 close-issue-btn"> Close Issue </button>
+                    <button class="btn btn-sm btn-outline-danger mt-2 action-issue-btn" data-action="close">Close Issue</button>
                 </div>
             </div>
         </div>
