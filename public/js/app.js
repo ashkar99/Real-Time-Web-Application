@@ -48,20 +48,18 @@ function showCommitNotification(payload) {
 }
 
 function insertIssue(issue) {
-    // Clone the template
     const node = issueTemplate.content.cloneNode(true);
     
-    // Select the root element and set its ID
     const wrapper = node.querySelector('.issue-node');
     wrapper.id = `issue-${issue.id}`;
     
     // Populate the data fields
     node.querySelector('.issue-title').textContent = `#${issue.iid}: ${issue.title}`;
-    node.querySelector('.issue-state').textContent = issue.state;
     node.querySelector('.issue-date').textContent = `Created: ${new Date(issue.created_at).toLocaleDateString()}`;
-    node.querySelector('.action-issue-btn').dataset.iid = issue.iid;
+    const actionBtn = node.querySelector('.action-issue-btn');
+    actionBtn.dataset.iid = issue.iid;
+    actionBtn.dataset.action = 'close'; 
 
-    // Inject at the top of the grid
     issueList.insertBefore(node, issueList.firstChild);
 }
 
@@ -69,9 +67,8 @@ issueList.addEventListener('click', async (event) => {
     if (event.target.classList.contains('action-issue-btn')) {
         const button = event.target;
         const iid = button.dataset.iid;
-        const action = button.dataset.action; // Reads 'close' or 'reopen'
+        const action = button.dataset.action; 
         
-        // Lock UI State
         button.disabled = true;
         button.textContent = action === 'close' ? 'Closing...' : 'Reopening...';
 
@@ -107,7 +104,6 @@ issueList.addEventListener('click', async (event) => {
             console.error(`Network error during ${action} operation:`, error);
             button.textContent = action === 'close' ? 'Close Issue' : 'Reopen Issue';
         } finally {
-            // Release UI Lock
             button.disabled = false;
         }
     }
@@ -152,7 +148,6 @@ if (createForm) {
         } catch (error) {
             console.error('Network integrity failure during creation:', error);
         } finally {
-            // Release state lock
             submitBtn.disabled = false;
             submitBtn.textContent = 'Deploy Issue';
         }
