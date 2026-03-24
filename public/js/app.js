@@ -55,6 +55,17 @@ function insertIssue(issue, authorName) {
     wrapper.id = `issue-${issue.id}`;
     
     node.querySelector('.issue-title').textContent = `#${issue.iid}: ${issue.title}`;
+    
+    const labelsContainer = node.querySelector('.issue-labels-container');
+    if (issue.labels && issue.labels.length > 0) {
+        issue.labels.forEach(label => {
+            const badge = document.createElement('span');
+            badge.className = 'badge rounded-pill text-bg-dark border me-1';
+            badge.textContent = label;
+            labelsContainer.appendChild(badge);
+        });
+    }
+    
     const descEl = node.querySelector('.issue-description');
     const descriptionText = issue.description ? issue.description : '';
     descEl.textContent = descriptionText;
