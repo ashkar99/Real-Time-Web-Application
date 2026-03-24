@@ -13,7 +13,17 @@ if (issueList) {
             const issue = data.payload.object_attributes;
             const authorName = data.payload.user?.name || 'System User';
             const webhookLabels = data.payload.labels || [];
-            insertIssue(issue, authorName, webhookLabels);
+            const action = data.action;
+
+            // Route the data based on the action type
+            if (action === 'open') {
+                insertIssue(issue, authorName, webhookLabels);
+            } else if (action === 'close' || action === 'reopen') {
+                updateIssueState(issue.id, action);
+            } else if (action === 'update') {
+                updateIssueContent(issue, webhookLabels);
+            }
+            
         } else if (data.type === 'push_event') {
             showCommitNotification(data.payload);
         }
