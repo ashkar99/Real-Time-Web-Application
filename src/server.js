@@ -1,4 +1,5 @@
 import express from 'express';
+import session from 'express-session';
 import 'dotenv/config';
 import { homeRouter } from './routes/homeRouter.js';
 import { webhookRouter } from './routes/webhookRouter.js';
@@ -6,6 +7,19 @@ import { wss } from './config/webSocketServer.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Session Middleware Configuration
+app.use(session({
+    name: 'b3.session',
+    secret: process.env.SESSION_SECRET || 'fallback_secret_if_missing_in_env',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
+        sameSite: 'lax'
+    }
+}));
 
 // Middleware
 app.use(express.json());
