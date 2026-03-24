@@ -55,12 +55,15 @@ function insertIssue(issue, authorName) {
     wrapper.id = `issue-${issue.id}`;
     
     node.querySelector('.issue-title').textContent = `#${issue.iid}: ${issue.title}`;
-    
+
     const labelsContainer = node.querySelector('.issue-labels-container');
     if (issue.labels && issue.labels.length > 0) {
+        const badgeColors = ['bg-primary', 'bg-danger', 'bg-success', 'bg-warning text-dark', 'bg-info text-dark', 'bg-dark'];
+        
         issue.labels.forEach(label => {
+            const colorClass = badgeColors[label.length % badgeColors.length];
             const badge = document.createElement('span');
-            badge.className = 'badge rounded-pill text-bg-dark border me-1';
+            badge.className = `badge rounded-pill ${colorClass} border me-1`;
             badge.textContent = label;
             labelsContainer.appendChild(badge);
         });
