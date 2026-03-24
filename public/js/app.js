@@ -55,6 +55,11 @@ function insertIssue(issue, authorName) {
     wrapper.id = `issue-${issue.id}`;
     
     node.querySelector('.issue-title').textContent = `#${issue.iid}: ${issue.title}`;
+    const descEl = node.querySelector('.issue-description');
+    const descriptionText = issue.description ? issue.description : 'No description provided.';
+    descEl.textContent = descriptionText;
+    descEl.title = descriptionText;
+    
     node.querySelector('.issue-date-author').innerHTML = `Created by <strong>${authorName}</strong> on ${new Date(issue.created_at).toLocaleDateString()}`;
     const actionBtn = node.querySelector('.action-issue-btn');
     actionBtn.dataset.iid = issue.iid;
