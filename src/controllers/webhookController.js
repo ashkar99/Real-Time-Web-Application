@@ -22,6 +22,7 @@ export const webhookController = {
             if (['open', 'close', 'reopen', 'update'].includes(action)) {
                 data = JSON.stringify({
                     type: 'issue_event',
+                    action: action,
                     payload: payload
                 });
             } else {
