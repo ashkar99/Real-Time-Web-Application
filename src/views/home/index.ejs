@@ -44,11 +44,13 @@
                                         <h5 class="card-title text-truncate" title="<%= issue.title %>">#<%= issue.iid %>: <%= issue.title %></h5>
                                         <span class="badge bg-success issue-state-badge">opened</span>
                                         <div class="mt-1 mb-2 issue-labels-container">
-                                            <% const badgeColors = ['bg-primary', 'bg-danger', 'bg-success', 'bg-warning text-dark', 'bg-info text-dark', 'bg-dark']; %>
-                                            <% issue.labels.forEach(label => { %>
-                                                <% const colorClass = badgeColors[label.length % badgeColors.length]; %>
-                                                <span class="badge rounded-pill <%= colorClass %> border me-1"><%= label %></span>
-                                            <% }) %>
+                                            <% if (issue.labels && issue.labels.length > 0) { %>
+                                                <% issue.labels.forEach(label => { %>
+                                                    <span class="badge rounded-pill border me-1" style="background-color: <%= label.color %>; color: <%= label.text_color %>;">
+                                                        <%= label.name %>
+                                                    </span>
+                                                <% }) %>
+                                            <% } %>
                                         </div>
                                         <p class="card-text small mt-2 mb-1 issue-description text-truncate" title="<%= issue.description || 'No description provided.' %>">
                                             <%= issue.description ? issue.description : '' %>
@@ -72,11 +74,13 @@
                                         <h5 class="card-title text-truncate" title="<%= issue.title %>">#<%= issue.iid %>: <%= issue.title %></h5>
                                         <span class="badge bg-secondary issue-state-badge">closed</span>
                                         <div class="mt-1 mb-2 issue-labels-container">
-                                            <% const badgeColors = ['bg-primary', 'bg-danger', 'bg-success', 'bg-warning text-dark', 'bg-info text-dark', 'bg-dark']; %>
-                                            <% issue.labels.forEach(label => { %>
-                                                <% const colorClass = badgeColors[label.length % badgeColors.length]; %>
-                                                <span class="badge rounded-pill <%= colorClass %> border me-1"><%= label %></span>
-                                            <% }) %>
+                                            <% if (issue.labels && issue.labels.length > 0) { %>
+                                                <% issue.labels.forEach(label => { %>
+                                                    <span class="badge rounded-pill border me-1" style="background-color: <%= label.color %>; color: <%= label.text_color %>;">
+                                                        <%= label.name %>
+                                                    </span>
+                                                <% }) %>
+                                            <% } %>
                                         </div>
                                         <p class="card-text small mt-2 mb-1 issue-description text-truncate" title="<%= issue.description || 'No description provided.' %>">
                                             <%= issue.description ? issue.description : '' %>
