@@ -2,6 +2,7 @@ import express from 'express';
 import session from 'express-session';
 import 'dotenv/config';
 import { homeRouter } from './routes/homeRouter.js';
+import { authRouter } from './routes/authRouter.js';
 import { webhookRouter } from './routes/webhookRouter.js';
 import { wss } from './config/webSocketServer.js';
 
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', homeRouter);
+app.use('/auth', authRouter);
 app.use('/webhook', webhookRouter);
 
 const server = app.listen(PORT, () => {
