@@ -12,7 +12,7 @@ export const issueController = {
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${process.env.GITLAB_PERSONAL_ACCESS_TOKEN}`
+                    'Authorization': `Bearer ${req.session.access_token}`
                 }
             });
 
@@ -52,7 +52,7 @@ export const issueController = {
             const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${process.env.GITLAB_PERSONAL_ACCESS_TOKEN}`
+                    'Authorization': `Bearer ${req.session.access_token}`
                 }
             });
 
@@ -89,7 +89,7 @@ export const issueController = {
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${process.env.GITLAB_PERSONAL_ACCESS_TOKEN}`,
+                    'Authorization': `Bearer ${req.session.access_token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -127,7 +127,7 @@ export const issueController = {
             const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${process.env.GITLAB_PERSONAL_ACCESS_TOKEN}`
+                    'Authorization': `Bearer ${req.session.access_token}`
                 }
             });
 
