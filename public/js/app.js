@@ -190,3 +190,60 @@ function insertIssue(issue, authorName, webhookLabels = []) {
     const openList = document.getElementById('open-issue-list');
     openList.insertBefore(node, openList.firstChild);
 }
+
+// Dynamically moves a card between Open/Closed tabs
+function updateIssueState(issueId, newAction) {
+    const cardNode = document.getElementById(`issue-${issueId}`);
+    if (!cardNode) return;
+
+    const badge = cardNode.querySelector('.issue-state-badge');
+    const button = cardNode.querySelector('.action-issue-btn');
+
+    if (newAction === 'close') {
+        badge.textContent = 'closed';
+        badge.classList.replace('bg-success', 'bg-secondary');
+        if (button) {
+            button.dataset.action = 'reopen';
+            button.textContent = 'Reopen Issue';
+            button.classList.replace('btn-outline-danger', 'btn-outline-success');
+        }
+        document.getElementById('closed-issue-list').prepend(cardNode);
+    } else if (newAction === 'reopen') {
+        badge.textContent = 'opened';
+        badge.classList.replace('bg-secondary', 'bg-success');
+        if (button) {
+            button.dataset.action = 'close';
+            button.textContent = 'Close Issue';
+            button.classList.replace('btn-outline-success', 'btn-outline-danger');
+        }
+        document.getElementById('open-issue-list').prepend(cardNode);
+    }
+}
+
+// Dynamically updates Title, Description, and Labels when edited on GitLab
+function updateIssueContent(issue, webhookLabels) {
+    const cardNode = document.getElementById(`issue-${issue.id}`);
+    if (!cardNode) return;
+
+    cardNode.querySelector('.issue-title').textContent = `#${issue.iid}: ${issue.title}`;
+    cardNode.querySelector('.issue-title').title = issue.title;
+    
+    const descEl = cardNode.querySelector('.issue-description');
+    const descriptionText = issue.description ? issue.description : 'No description provided.';
+    descEl.textContent = descriptionText;
+    descEl.title = descriptionText;
+
+    const labelsContainer = cardNode.querySelector('.issue-labels-container');
+    labelsContainer.innerHTML = '';
+    
+    if (webhookLabels && webhookLabels.length > 0) {
+        webhookLabels.forEach(label => {
+            const badge = document.createElement('span');
+            badge.className = 'badge rounded-pill border me-1';
+            badge.style.backgroundColor = label.color;
+            badge.style.color = label.text_color || '#FFFFFF';
+            badge.textContent = label.title; 
+            labelsContainer.appendChild(badge);
+        });
+    }
+}
