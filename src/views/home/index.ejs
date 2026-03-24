@@ -26,10 +26,10 @@
         <div class="row" id="issue-list">
             <ul class="nav nav-tabs" id="issueTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active text-success fw-bold" id="open-tab" data-bs-toggle="tab" data-bs-target="#open-issues" type="button" role="tab">Active Assets (Open)</button>
+                    <button class="nav-link active text-success fw-bold" id="open-tab" data-bs-toggle="tab" data-bs-target="#open-issues" type="button" role="tab">Active Issues</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link text-secondary fw-bold" id="closed-tab" data-bs-toggle="tab" data-bs-target="#closed-issues" type="button" role="tab">Liquidated Assets (Closed)</button>
+                    <button class="nav-link text-secondary fw-bold" id="closed-tab" data-bs-toggle="tab" data-bs-target="#closed-issues" type="button" role="tab">Inactive Issues</button>
                 </li>
             </ul>
 
@@ -79,7 +79,7 @@
                 <div class="card-body">
                     <h5 class="card-title text-truncate issue-title"></h5>
                     <span class="badge bg-success issue-state-badge">opened</span>
-                    <span class="badge bg-primary ms-1">NEW (Real-time)</span>
+                    <span class="badge bg-primary ms-1">NEW</span>
                     <p class="card-text text-muted small mt-2 issue-date-author"></p>
                     <button class="btn btn-sm btn-outline-danger mt-2 action-issue-btn" data-action="close">Close Issue</button>
                 </div>
