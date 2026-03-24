@@ -13,15 +13,29 @@
 </head>
 <body>
     <div class="container">
-        <header class="pb-3 mb-4 border-bottom d-flex justify-content-between align-items-center">
-          <div>
-              <h1 class="h3 text-dark">System Repository Issues</h1>
-              <p class="text-muted mb-0">Real-time monitoring active.</p>
-          </div>
-          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createIssueModal">
-              + Create Issue
-          </button>
-        </header>
+        <% if (!authenticated) { %>
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-6 text-center">
+                    <h1 class="mb-4">B3 Production Dashboard</h1>
+                    <p class="text-muted mb-4">You must authenticate via GitLab to access the repository data.</p>
+                    <a href="/auth/login" class="btn btn-lg btn-primary text-white fw-bold">
+                        Log In with GitLab OAuth
+                    </a>
+                </div>
+            </div>
+        <% } else { %>
+            <header class="pb-3 mb-4 border-bottom d-flex justify-content-between align-items-center">
+              <div>
+                  <h1 class="h3 text-dark">System Repository Issues</h1>
+                  <p class="text-muted mb-0">Real-time monitoring active.</p>
+              </div>
+              <div>
+                  <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#createIssueModal">
+                      + Create Issue
+                  </button>
+                  <a href="/auth/logout" class="btn btn-outline-secondary">Log Out</a>
+              </div>
+            </header>
 
         <div class="row" id="issue-list">
             <ul class="nav nav-tabs" id="issueTabs" role="tablist">
@@ -97,6 +111,7 @@
 
             </div>
         </div>
+        <% } %>
     </div>
 
     <template id="issue-template">

@@ -1,5 +1,10 @@
 export const issueController = {
     async index(req, res) {
+
+        if (!req.session.access_token) {
+            return res.render('home/index', { authenticated: false });
+        }
+
         try {
             const projectId = process.env.GITLAB_PROJECT_ID;
             const url = `https://gitlab.lnu.se/api/v4/projects/${projectId}/issues?state=all&per_page=100&with_labels_details=true`;
@@ -11,14 +16,20 @@ export const issueController = {
                 }
             });
 
+            // token expired, force re-login
+            if (response.status === 401) {
+                req.session.destroy();
+                return res.redirect('/');
+            }
+
             if (!response.ok) {
                 throw new Error(`GitLab API error: ${response.status} ${response.statusText}`);
             }
 
             const issues = await response.json();
             
-            // Pass the issues data to the EJS view
-            res.render('home/index', { issues });
+            // Render dashboard with issues data and auth 
+            res.render('home/index', { authenticated: true, issues });
 
         } catch (error) {
             console.error('Failed to fetch issues:', error);
@@ -27,6 +38,11 @@ export const issueController = {
     },
 
     async closeIssue(req, res) {
+
+        if (!req.session.access_token) {
+            return res.render('home/index', { authenticated: false });
+        }
+
         try {
             const { iid } = req.params; // internal ID (iid) for project-specific operations
             const projectId = process.env.GITLAB_PROJECT_ID;
@@ -54,6 +70,11 @@ export const issueController = {
     },
 
   async createIssue(req, res) {
+
+        if (!req.session.access_token) {
+            return res.render('home/index', { authenticated: false });
+        }
+
         try {
             const { title, description } = req.body;
             
@@ -91,29 +112,34 @@ export const issueController = {
     },
 
   async reopenIssue(req, res) {
-      try {
-          const { iid } = req.params; 
-          const projectId = process.env.GITLAB_PROJECT_ID;
-          
-          // The GitLab endpoint to reopen an issue
-          const url = `https://gitlab.lnu.se/api/v4/projects/${projectId}/issues/${iid}?state_event=reopen`;
 
-          const response = await fetch(url, {
-              method: 'PUT',
-              headers: {
-                  'Authorization': `Bearer ${process.env.GITLAB_PERSONAL_ACCESS_TOKEN}`
-              }
-          });
+        if (!req.session.access_token) {
+            return res.render('home/index', { authenticated: false });
+        }
 
-          if (!response.ok) {
-              throw new Error(`GitLab API error: ${response.status} ${response.statusText}`);
-          }
+        try {
+            const { iid } = req.params; 
+            const projectId = process.env.GITLAB_PROJECT_ID;
+            
+            // The GitLab endpoint to reopen an issue
+            const url = `https://gitlab.lnu.se/api/v4/projects/${projectId}/issues/${iid}?state_event=reopen`;
 
-          res.status(200).json({ message: `Issue #${iid} successfully reopened.` });
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${process.env.GITLAB_PERSONAL_ACCESS_TOKEN}`
+                }
+            });
 
-      } catch (error) {
-          console.error('Failed to reopen issue:', error);
-          res.status(500).json({ error: 'Internal Server Error while communicating with GitLab.' });
-      }
+            if (!response.ok) {
+                throw new Error(`GitLab API error: ${response.status} ${response.statusText}`);
+            }
+
+            res.status(200).json({ message: `Issue #${iid} successfully reopened.` });
+
+        } catch (error) {
+            console.error('Failed to reopen issue:', error);
+            res.status(500).json({ error: 'Internal Server Error while communicating with GitLab.' });
+        }
   },
 };
