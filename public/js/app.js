@@ -55,7 +55,7 @@ if (issueList) {
                         button.textContent = 'Reopen Issue';
                         button.classList.replace('btn-outline-danger', 'btn-outline-success');
                         
-                        if (closedBySpan) closedBySpan.innerHTML = `Closed by <strong>You</strong>`;
+                        if (closedBySpan) closedBySpan.innerHTML = `Closed by <strong>You</strong> on ${new Date().toLocaleDateString()}`;
 
                         document.getElementById('closed-issue-list').prepend(cardNode);
                     } else {
@@ -212,7 +212,7 @@ function updateIssueState(issueId, newAction, actionUser = 'Unkown') {
             button.classList.replace('btn-outline-danger', 'btn-outline-success');
         }
 
-        if (closedBySpan) closedBySpan.innerHTML = `Closed by <strong>${actionUser}</strong>`;
+        if (closedBySpan) closedBySpan.innerHTML = `Closed by <strong>${actionUser}</strong> on ${new Date().toLocaleDateString()}`;
         
         document.getElementById('closed-issue-list').prepend(cardNode);
     } else if (newAction === 'reopen') {

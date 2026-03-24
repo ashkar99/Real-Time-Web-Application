@@ -107,7 +107,7 @@
                                             Created by <strong><%= issue.author.name %></strong> on <%= new Date(issue.created_at).toLocaleDateString() %>
                                             <span class="issue-closed-by d-block mt-1 text-danger">
                                                 <% if (issue.closed_by) { %>
-                                                    Closed by <strong><%= issue.closed_by.name %></strong>
+                                                    Closed by <strong><%= issue.closed_by.name %></strong> on <%= new Date(issue.closed_at || issue.updated_at).toLocaleDateString() %>
                                                 <% } %>
                                             </span>
                                         </p>
