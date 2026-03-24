@@ -10,8 +10,9 @@ ws.onmessage = (event) => {
     
     if (data.type === 'issue_event') {
         const issue = data.payload.object_attributes;
-        const authorName = data.payload.user.name;
-        insertIssue(issue, authorName);
+        const authorName = data.payload.user?.name || 'System User';
+        const webhookLabels = data.payload.labels || [];
+        insertIssue(issue, authorName, webhookLabels);
     } else if (data.type === 'push_event') {
         showCommitNotification(data.payload);
     }
@@ -48,23 +49,23 @@ function showCommitNotification(payload) {
     });
 }
 
-function insertIssue(issue, authorName) {
+function insertIssue(issue, authorName, webhookLabels = []) {
     const node = issueTemplate.content.cloneNode(true);
     
     const wrapper = node.querySelector('.issue-node');
     wrapper.id = `issue-${issue.id}`;
     
     node.querySelector('.issue-title').textContent = `#${issue.iid}: ${issue.title}`;
-
+    
+    // NEW: Inject Native GitLab Colors
     const labelsContainer = node.querySelector('.issue-labels-container');
-    if (issue.labels && issue.labels.length > 0) {
-        const badgeColors = ['bg-primary', 'bg-danger', 'bg-success', 'bg-warning text-dark', 'bg-info text-dark', 'bg-dark'];
-        
-        issue.labels.forEach(label => {
-            const colorClass = badgeColors[label.length % badgeColors.length];
+    if (webhookLabels && webhookLabels.length > 0) {
+        webhookLabels.forEach(label => {
             const badge = document.createElement('span');
-            badge.className = `badge rounded-pill ${colorClass} border me-1`;
-            badge.textContent = label;
+            badge.className = 'badge rounded-pill border me-1';
+            badge.style.backgroundColor = label.color;
+            badge.style.color = label.text_color || '#FFFFFF';
+            badge.textContent = label.title; 
             labelsContainer.appendChild(badge);
         });
     }

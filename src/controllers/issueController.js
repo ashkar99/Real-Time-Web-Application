@@ -2,7 +2,7 @@ export const issueController = {
     async index(req, res) {
         try {
             const projectId = process.env.GITLAB_PROJECT_ID;
-            const url = `https://gitlab.lnu.se/api/v4/projects/${projectId}/issues?state=all&per_page=100`;
+            const url = `https://gitlab.lnu.se/api/v4/projects/${projectId}/issues?state=all&per_page=100&with_labels_details=true`;
 
             const response = await fetch(url, {
                 method: 'GET',
