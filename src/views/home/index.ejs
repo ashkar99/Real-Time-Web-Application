@@ -67,7 +67,7 @@
                                         <span class="badge bg-secondary issue-state-badge">closed</span>
                                         
                                         <p class="card-text small mt-2 mb-1 issue-description text-truncate" title="<%= issue.description || 'No description provided.' %>">
-                                            <%= issue.description ? issue.description : 'No description provided.' %>
+                                            <%= issue.description ? issue.description : '' %>
                                         </p>
                                         
                                         <p class="card-text text-muted small mt-2">Created by <strong><%= issue.author.name %></strong> on <%= new Date(issue.created_at).toLocaleDateString() %></p>
@@ -89,7 +89,7 @@
                 <div class="card-body">
                     <h5 class="card-title text-truncate issue-title"></h5>
                     <span class="badge bg-success issue-state-badge">opened</span>
-                    <span class="badge bg-primary ms-1">NEW (Real-time)</span>
+                    <span class="badge bg-primary ms-1">NEW</span>
                     
                     <p class="card-text small mt-2 mb-1 issue-description text-truncate"></p>
                     

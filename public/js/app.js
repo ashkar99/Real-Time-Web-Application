@@ -56,7 +56,7 @@ function insertIssue(issue, authorName) {
     
     node.querySelector('.issue-title').textContent = `#${issue.iid}: ${issue.title}`;
     const descEl = node.querySelector('.issue-description');
-    const descriptionText = issue.description ? issue.description : 'No description provided.';
+    const descriptionText = issue.description ? issue.description : '';
     descEl.textContent = descriptionText;
     descEl.title = descriptionText;
     
