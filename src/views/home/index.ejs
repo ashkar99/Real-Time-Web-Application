@@ -43,7 +43,11 @@
                                     <div class="card-body">
                                         <h5 class="card-title text-truncate" title="<%= issue.title %>">#<%= issue.iid %>: <%= issue.title %></h5>
                                         <span class="badge bg-success issue-state-badge">opened</span>
-                                        
+                                        <div class="mt-1 mb-2 issue-labels-container">
+                                            <% issue.labels.forEach(label => { %>
+                                                <span class="badge rounded-pill text-bg-dark border me-1"><%= label %></span>
+                                            <% }) %>
+                                        </div>
                                         <p class="card-text small mt-2 mb-1 issue-description text-truncate" title="<%= issue.description || 'No description provided.' %>">
                                             <%= issue.description ? issue.description : '' %>
                                         </p>
@@ -65,7 +69,11 @@
                                     <div class="card-body">
                                         <h5 class="card-title text-truncate" title="<%= issue.title %>">#<%= issue.iid %>: <%= issue.title %></h5>
                                         <span class="badge bg-secondary issue-state-badge">closed</span>
-                                        
+                                        <div class="mt-1 mb-2 issue-labels-container">
+                                            <% issue.labels.forEach(label => { %>
+                                                <span class="badge rounded-pill text-bg-dark border me-1"><%= label %></span>
+                                            <% }) %>
+                                        </div>
                                         <p class="card-text small mt-2 mb-1 issue-description text-truncate" title="<%= issue.description || 'No description provided.' %>">
                                             <%= issue.description ? issue.description : '' %>
                                         </p>
@@ -90,6 +98,7 @@
                     <h5 class="card-title text-truncate issue-title"></h5>
                     <span class="badge bg-success issue-state-badge">opened</span>
                     <span class="badge bg-primary ms-1">NEW</span>
+                    <div class="mt-1 mb-2 issue-labels-container"></div>
                     
                     <p class="card-text small mt-2 mb-1 issue-description text-truncate"></p>
                     
