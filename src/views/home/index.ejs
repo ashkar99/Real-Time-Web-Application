@@ -70,7 +70,10 @@
                                             <%= issue.description ? issue.description : '' %>
                                         </p>
                                         
-                                        <p class="card-text text-muted small mt-2">Created by <strong><%= issue.author.name %></strong> on <%= new Date(issue.created_at).toLocaleDateString() %></p>
+                                        <p class="card-text text-muted small mt-2">
+                                            Created by <strong><%= issue.author.name %></strong> on <%= new Date(issue.created_at).toLocaleDateString() %>
+                                            <span class="issue-closed-by d-block mt-1 text-danger"></span>
+                                        </p>
                                         <button class="btn btn-sm btn-outline-danger mt-2 action-issue-btn" data-iid="<%= issue.iid %>" data-action="close">Close Issue</button>
                                     </div>
                                 </div>
@@ -100,7 +103,14 @@
                                             <%= issue.description ? issue.description : '' %>
                                         </p>
                                         
-                                        <p class="card-text text-muted small mt-2">Created by <strong><%= issue.author.name %></strong> on <%= new Date(issue.created_at).toLocaleDateString() %></p>
+                                        <p class="card-text text-muted small mt-2">
+                                            Created by <strong><%= issue.author.name %></strong> on <%= new Date(issue.created_at).toLocaleDateString() %>
+                                            <span class="issue-closed-by d-block mt-1 text-danger">
+                                                <% if (issue.closed_by) { %>
+                                                    Closed by <strong><%= issue.closed_by.name %></strong>
+                                                <% } %>
+                                            </span>
+                                        </p>
                                         <button class="btn btn-sm btn-outline-success mt-2 action-issue-btn" data-iid="<%= issue.iid %>" data-action="reopen">Reopen Issue</button>
                                     </div>
                                 </div>
@@ -125,7 +135,10 @@
                     
                     <p class="card-text small mt-2 mb-1 issue-description text-truncate"></p>
                     
-                    <p class="card-text text-muted small mt-2 issue-date-author"></p>
+                    <div class="card-text text-muted small mt-2">
+                        <span class="issue-date-author"></span>
+                        <span class="issue-closed-by d-block mt-1 text-danger"></span>
+                    </div>
                     <button class="btn btn-sm btn-outline-danger mt-2 action-issue-btn" data-action="close">Close Issue</button>
                 </div>
             </div>

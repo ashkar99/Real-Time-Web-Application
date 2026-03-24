@@ -19,7 +19,7 @@ if (issueList) {
             if (action === 'open') {
                 insertIssue(issue, authorName, webhookLabels);
             } else if (action === 'close' || action === 'reopen') {
-                updateIssueState(issue.id, action);
+                updateIssueState(issue.id, action, authorName);
             } else if (action === 'update') {
                 updateIssueContent(issue, webhookLabels);
             }
@@ -46,6 +46,7 @@ if (issueList) {
                 if (response.ok) {
                     const cardNode = button.closest('.issue-node');
                     const badge = cardNode.querySelector('.issue-state-badge');
+                    const closedBySpan = cardNode.querySelector('.issue-closed-by');
 
                     if (action === 'close') {
                         badge.textContent = 'closed';
@@ -53,8 +54,9 @@ if (issueList) {
                         button.dataset.action = 'reopen';
                         button.textContent = 'Reopen Issue';
                         button.classList.replace('btn-outline-danger', 'btn-outline-success');
+                        
+                        if (closedBySpan) closedBySpan.innerHTML = `Closed by <strong>You</strong>`;
 
-                        // Move to closed list
                         document.getElementById('closed-issue-list').prepend(cardNode);
                     } else {
                         badge.textContent = 'opened';
@@ -62,8 +64,9 @@ if (issueList) {
                         button.dataset.action = 'close';
                         button.textContent = 'Close Issue';
                         button.classList.replace('btn-outline-success', 'btn-outline-danger');
+                        
+                        if (closedBySpan) closedBySpan.innerHTML = '';
 
-                        // Move to open list
                         document.getElementById('open-issue-list').prepend(cardNode);
                     }
                 } else {
@@ -192,12 +195,13 @@ function insertIssue(issue, authorName, webhookLabels = []) {
 }
 
 // Dynamically moves a card between Open/Closed tabs
-function updateIssueState(issueId, newAction) {
+function updateIssueState(issueId, newAction, actionUser = 'Unkown') {
     const cardNode = document.getElementById(`issue-${issueId}`);
     if (!cardNode) return;
 
     const badge = cardNode.querySelector('.issue-state-badge');
     const button = cardNode.querySelector('.action-issue-btn');
+    const closedBySpan = cardNode.querySelector('.issue-closed-by'); 
 
     if (newAction === 'close') {
         badge.textContent = 'closed';
@@ -207,6 +211,9 @@ function updateIssueState(issueId, newAction) {
             button.textContent = 'Reopen Issue';
             button.classList.replace('btn-outline-danger', 'btn-outline-success');
         }
+
+        if (closedBySpan) closedBySpan.innerHTML = `Closed by <strong>${actionUser}</strong>`;
+        
         document.getElementById('closed-issue-list').prepend(cardNode);
     } else if (newAction === 'reopen') {
         badge.textContent = 'opened';
@@ -216,6 +223,9 @@ function updateIssueState(issueId, newAction) {
             button.textContent = 'Close Issue';
             button.classList.replace('btn-outline-success', 'btn-outline-danger');
         }
+        
+        if (closedBySpan) closedBySpan.innerHTML = '';
+        
         document.getElementById('open-issue-list').prepend(cardNode);
     }
 }
