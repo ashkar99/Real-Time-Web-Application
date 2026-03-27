@@ -32,8 +32,8 @@ A real-time, multi-tenant web client designed to monitor and manage a GitLab rep
 Clone the repository and install the dependencies. *(Note: `--legacy-peer-deps` is required to resolve strict ESLint plugin versioning).*
 
 ```bash
-git clone https://github.com/yourusername/b3-production.git
-cd b3-production
+git clone https://github.com/ashkar99/Real-Time-Web-Application.git
+cd Real-Time-Web-Application
 npm install --legacy-peer-deps
 ```
 
