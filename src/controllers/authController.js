@@ -1,5 +1,13 @@
+/**
+ * Controller handling GitLab OAuth 2.0 authentication flows.
+ */
 export const authController = {
-  // Redirect user to GitLab's login page
+  /**
+   * Redirects the user to the GitLab OAuth authorization page.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   */
   login (req, res) {
     const appId = process.env.GITLAB_APP_ID
     const redirectUri = encodeURIComponent(process.env.GITLAB_CALLBACK_URL)
@@ -8,7 +16,14 @@ export const authController = {
     res.redirect(url)
   },
 
-  // Receive the authorization code from GitLab and exchange it for a token
+  /**
+   * Handles the OAuth callback from GitLab, exchanges the authorization code for an access token,
+   * and stores it securely in the user's session.
+   *
+   * @param {object} req - Express request object containing the query code.
+   * @param {object} res - Express response object.
+   * @returns {Promise<void>} Redirects the user to the dashboard on success.
+   */
   async callback (req, res) {
     const { code } = req.query
 
@@ -44,7 +59,12 @@ export const authController = {
     }
   },
 
-  // Destroy the session
+  /**
+   * Destroys the current user session and redirects to the login screen.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   */
   logout (req, res) {
     req.session.destroy(() => {
       res.redirect('/')
