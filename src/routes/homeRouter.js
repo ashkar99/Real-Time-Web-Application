@@ -1,3 +1,8 @@
+/**
+ * @file Express router for the main dashboard interface and manual issue operations.
+ * @module homeRouter - Handles routing for the home page and issue management actions like closing, creating, and reopening issues.
+ *  @requires express - Express framework for routing and middleware.
+ */
 import express from 'express'
 import { issueController } from '../controllers/issueController.js'
 

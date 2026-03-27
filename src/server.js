@@ -1,3 +1,9 @@
+/**
+ * @file Entry point for the B3 Production Dashboard application.
+ * Initializes the Express server, mounts middleware, configures sessions,
+ * and attaches the WebSocket server for real-time communication.
+ * @module server - Main server setup and configuration.
+ */
 import express from 'express'
 import session from 'express-session'
 import 'dotenv/config'
