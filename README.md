@@ -1,4 +1,4 @@
-# B3 Production Dashboard
+# Real Time Web Application
 
 A real-time, multi-tenant web client designed to monitor and manage a GitLab repository. Engineered with Node.js, Express, and WebSockets, this dashboard leverages the GitLab REST API and Webhook system to provide seamless, two-way data synchronization without ever reloading the page.
 
