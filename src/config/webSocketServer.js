@@ -2,7 +2,6 @@
  * @file WebSocket Server Configuration.
  * Creates an independent WebSocket instance to be upgraded manually by the Express server.
  * @module webSocketServer - Configures the WebSocket server for real-time communication with clients.
- * @requires ws - WebSocket library for Node.js
  */
 import { WebSocketServer } from 'ws'
 

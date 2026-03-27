@@ -4,7 +4,6 @@
 export const authController = {
   /**
    * Redirects the user to the GitLab OAuth authorization page.
-   *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */
@@ -19,7 +18,6 @@ export const authController = {
   /**
    * Handles the OAuth callback from GitLab, exchanges the authorization code for an access token,
    * and stores it securely in the user's session.
-   *
    * @param {object} req - Express request object containing the query code.
    * @param {object} res - Express response object.
    * @returns {Promise<void>} Redirects the user to the dashboard on success.
@@ -61,7 +59,6 @@ export const authController = {
 
   /**
    * Destroys the current user session and redirects to the login screen.
-   *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    */

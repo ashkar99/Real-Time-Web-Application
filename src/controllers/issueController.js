@@ -1,4 +1,14 @@
+/**
+ * Controller handling GitLab issue operations via the REST API.
+ */
 export const issueController = {
+  /**
+   * Fetches all project issues from GitLab and renders the main dashboard view.
+   * Requires a valid OAuth session token.
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @returns {Promise<void>} Renders the index view or redirects on authentication failure.
+   */
   async index (req, res) {
     if (!req.session.access_token) {
       return res.render('home/index', { authenticated: false })
@@ -35,6 +45,12 @@ export const issueController = {
     }
   },
 
+  /**
+   * Closes a specific issue in the GitLab repository via the REST API.
+   * @param {object} req - Express request object containing the issue IID in params.
+   * @param {object} res - Express response object.
+   * @returns {Promise<void>} Responds with JSON indicating success or failure.
+   */
   async closeIssue (req, res) {
     if (!req.session.access_token) {
       return res.render('home/index', { authenticated: false })
@@ -65,6 +81,12 @@ export const issueController = {
     }
   },
 
+  /**
+   * Creates a new issue in the GitLab repository using data from the front-end form.
+   * @param {object} req - Express request object containing title and description in the body.
+   * @param {object} res - Express response object.
+   * @returns {Promise<void>} Responds with the newly created issue data as JSON.
+   */
   async createIssue (req, res) {
     if (!req.session.access_token) {
       return res.render('home/index', { authenticated: false })
@@ -105,6 +127,12 @@ export const issueController = {
     }
   },
 
+  /**
+   * Reopens a previously closed issue in the GitLab repository via the REST API.
+   * @param {object} req - Express request object containing the issue IID in params.
+   * @param {object} res - Express response object.
+   * @returns {Promise<void>} Responds with JSON indicating success or failure.
+   */
   async reopenIssue (req, res) {
     if (!req.session.access_token) {
       return res.render('home/index', { authenticated: false })
