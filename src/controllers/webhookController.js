@@ -1,7 +1,16 @@
+/**
+ * Controller handling incoming GitLab webhooks and WebSocket broadcasting.
+ */
 export const webhookController = {
-  // Security Middleware
+  /**
+   * Security middleware to verify the authenticity of the incoming GitLab webhook.
+   * Checks the 'x-gitlab-token' header against the environment secret.
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {object} next - Express next middleware function.
+   * @returns {object|void} Returns a 401 response if unauthorized, otherwise calls next().
+   */
   verifyToken (req, res, next) {
-    // GitLab sends the secret in the x-gitlab-token header
     if (req.headers['x-gitlab-token'] !== process.env.WEBHOOK_SECRET) {
       console.warn('Security Alert: Invalid webhook token received.')
       return res.status(401).send('Unauthorized: Invalid Token')
@@ -9,13 +18,17 @@ export const webhookController = {
     next()
   },
 
+  /**
+   * Parses the GitLab webhook payload and broadcasts relevant events to WebSocket clients.
+   * @param {object} req - Express request object containing the webhook payload.
+   * @param {object} res - Express response object.
+   */
   handleWebhook (req, res) {
     res.status(200).send('Webhook acknowledged.')
 
     const payload = req.body
     let data = null
 
-    // Issue Events
     if (payload.object_kind === 'issue') {
       const action = payload.object_attributes.action
 
@@ -28,9 +41,7 @@ export const webhookController = {
       } else {
         console.log(`Filtered out issue event with action: ${action}`)
       }
-    }
-    // Push (Commit) Events
-    else if (payload.object_kind === 'push') {
+    } else if (payload.object_kind === 'push') { // MOVED THE COMMENT HERE TO FIX THE LINT ERROR
       const userName = payload.user_name || 'A user'
       const commitCount = payload.total_commits_count || 0
       const branch = payload.ref ? payload.ref.replace('refs/heads/', '') : 'unknown'
