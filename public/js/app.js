@@ -4,31 +4,50 @@ const issueTemplate = document.querySelector('#issue-template')
 const issueList = document.querySelector('#issue-list')
 
 if (issueList) {
-  // Establish the WebSocket connection
-  const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
-  const ws = new WebSocket(protocol + window.location.host)
+  function connectWebSocket() {
+    const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
+    const ws = new WebSocket(protocol + window.location.host)
 
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data)
+    // The Heartbeat (Keeps Nginx awake)
+    ws.onopen = () => {
+      console.log('WebSocket Connected');
+      setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ type: 'ping' }));
+        }
+      }, 30000); // Sends a tiny ping every 30 seconds
+    }
 
-    if (data.type === 'issue_event') {
-      const issue = data.payload.object_attributes
-      const authorName = data.payload.user?.name || 'System User'
-      const webhookLabels = data.payload.labels || []
-      const action = data.action
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data)
 
-      // Route the data based on the action type
-      if (action === 'open') {
-        insertIssue(issue, authorName, webhookLabels)
-      } else if (action === 'close' || action === 'reopen') {
-        updateIssueState(issue.id, action, authorName)
-      } else if (action === 'update') {
-        updateIssueContent(issue, webhookLabels)
+      if (data.type === 'issue_event') {
+        const issue = data.payload.object_attributes
+        const authorName = data.payload.user?.name || 'System User'
+        const webhookLabels = data.payload.labels || []
+        const action = data.action
+
+        if (action === 'open') {
+          insertIssue(issue, authorName, webhookLabels)
+        } else if (action === 'close' || action === 'reopen') {
+          updateIssueState(issue.id, action, authorName)
+        } else if (action === 'update') {
+          updateIssueContent(issue, webhookLabels)
+        }
+      } else if (data.type === 'push_event') {
+        showCommitNotification(data.payload)
       }
-    } else if (data.type === 'push_event') {
-      showCommitNotification(data.payload)
+    }
+
+    // The Auto-Reconnect (Revives the connection if it dies)
+    ws.onclose = () => {
+      console.log('Connection lost. Reconnecting in 3 seconds...')
+      setTimeout(connectWebSocket, 3000)
     }
   }
+
+  // Initialize the connection
+  connectWebSocket();
 
   issueList.addEventListener('click', async (event) => {
     if (event.target.classList.contains('action-issue-btn')) {
