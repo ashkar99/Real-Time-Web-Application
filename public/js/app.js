@@ -1,3 +1,5 @@
+/* global bootstrap */
+
 const issueTemplate = document.querySelector('#issue-template')
 const issueList = document.querySelector('#issue-list')
 
@@ -128,8 +130,8 @@ if (createForm) {
 }
 
 /**
- *
- * @param payload
+ * Displays a Bootstrap Toast notification for code push events
+ * @param {object} payload - The payload containing user, commits, and branch information from the push event
  */
 function showCommitNotification (payload) {
   const container = document.getElementById('notification-zone')
@@ -163,10 +165,10 @@ function showCommitNotification (payload) {
 }
 
 /**
- *
- * @param issue
- * @param authorName
- * @param webhookLabels
+ * Inserts a new issue card into the Open Issues list with dynamic content and styling based on GitLab's webhook payload
+ * @param {object} issue - The issue object containing details like title, description, creation date, etc.
+ * @param {string} authorName - The name of the user who created the issue
+ * @param {Array} webhookLabels - An array of labels associated with the issue
  */
 function insertIssue (issue, authorName, webhookLabels = []) {
   const node = issueTemplate.content.cloneNode(true)
@@ -203,12 +205,11 @@ function insertIssue (issue, authorName, webhookLabels = []) {
   openList.insertBefore(node, openList.firstChild)
 }
 
-// Dynamically moves a card between Open/Closed tabs
 /**
- *
- * @param issueId
- * @param newAction
- * @param actionUser
+ * Updates the issue card's state (open/closed) and moves it between Open and Closed lists based on the action received from GitLab's webhook
+ * @param {number} issueId - The unique identifier of the issue to be updated
+ * @param {string} newAction - The new action to be applied to the issue (open/close)
+ * @param {string} actionUser - The user who performed the action
  */
 function updateIssueState (issueId, newAction, actionUser = 'Unkown') {
   const cardNode = document.getElementById(`issue-${issueId}`)
@@ -245,11 +246,10 @@ function updateIssueState (issueId, newAction, actionUser = 'Unkown') {
   }
 }
 
-// Dynamically updates Title, Description, and Labels when edited on GitLab
 /**
- *
- * @param issue
- * @param webhookLabels
+ * Updates the content of an existing issue card with new information
+ * @param {object} issue - The issue object containing updated details
+ * @param {Array} webhookLabels - An array of labels associated with the issue
  */
 function updateIssueContent (issue, webhookLabels) {
   const cardNode = document.getElementById(`issue-${issue.id}`)
